@@ -15,7 +15,11 @@ CREATE TABLE IF NOT EXISTS Course(
 );
 
 CREATE TABLE IF NOT EXISTS CourseOffering(
-    Id int PRIMARY KEY
+    Id int PRIMARY KEY,
+    CourseId int,
+    CONSTRAINT fk_Course
+        FOREIGN KEY (CourseId)
+        REFERENCES Course(Id)
 );
 
 CREATE TABLE IF NOT EXISTS Meeting(
