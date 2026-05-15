@@ -6,24 +6,12 @@
     "configurations": [
         {
             "name": "Launch Program",
-            "program": "${workspaceFolder}/dist/server.js",
+            "program": "${workspaceFolder}/backend/dist/server.js",
             "request": "launch",
             "skipFiles": [
                 "<node_internals>/**"
             ],
             "type": "node"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Program",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "program": "${workspaceFolder}/src/controllers/CourseController.ts",
-            "outFiles": [
-                "${workspaceFolder}/**/*.js"
-            ]
         }
     ]
 }

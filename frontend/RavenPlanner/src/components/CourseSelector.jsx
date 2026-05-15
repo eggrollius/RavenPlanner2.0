@@ -6,6 +6,7 @@ const CourseSelector = ({ onSelect, onDeselect }) => {
     const [ courses, setCourses ] = useState([]);
     const [ searchTerm, setSearchTerm ] = useState("");
     const [ searchResultCourses, setSearchResultCourses ] = useState([]);
+    const [ selectedCourseIds, setSelectedCourseIds ] = useState([]);
 
     const initializeCourseAsync = async () => {
         const newCourses = await courseService.getAllCourses();
@@ -40,10 +41,11 @@ const CourseSelector = ({ onSelect, onDeselect }) => {
     };
 
     const handleCheckboxOnChange = (event, course) => {
-        event.preventDefault();
         if (event.target.checked) {
+            setSelectedCourseIds(selectedCourseIds.concat(course.id));
             onSelect(course);
         } else {
+            setSelectedCourseIds(selectedCourseIds.filter(id => id !== course.id));
             onDeselect(course);
         }
     };
@@ -66,6 +68,7 @@ const CourseSelector = ({ onSelect, onDeselect }) => {
                         </label>
                         <input 
                             type="checkbox" 
+                            checked={selectedCourseIds.includes(course.id)}
                             onChange={(event) => handleCheckboxOnChange(event, course)} 
                         />
                     </li>
