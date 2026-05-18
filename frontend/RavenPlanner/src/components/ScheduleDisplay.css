@@ -1,0 +1,59 @@
+body {
+    font-family: Arial;
+    font-weight: bold;
+    padding: 20px;
+}
+
+.calendar {
+    position: relative;
+    border: 1px solid #ccc;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 80px repeat(5, 1fr);
+
+    /* start time: 8:35am = 515 minutes.
+       end time :10:05pm = 1325 minutes.
+       (1325-515) / 15 = 54.
+    */
+    grid-template-rows: 40px repeat(54, 40px);
+}
+
+.header {
+    background: #f3f3f3;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-bottom: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+}
+
+.time {
+    border-top: 1px solid #eee;
+    padding: 4px;
+    font-size: 12px;
+    color: #666;
+}
+
+.cell {
+    border-top: 1px solid #eee;
+    border-left: 1px solid #eee;
+}
+
+.events-layer {
+    position: absolute;
+    display: flex;
+    /*
+        Skip header row
+        and time column
+    */
+    top: 40px;
+    left: 80px;
+
+    right: 0;
+    bottom: 0;
+}

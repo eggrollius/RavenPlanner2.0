@@ -1,0 +1,12 @@
+.meetingCard {
+  position: relative;
+
+  top: calc((var(--startMinutes) - 515) / 15 * 40px); 
+  height: calc((var(--endMinutes) - var(--startMinutes)) / 15 * 40px); /* each row is 15 minutes and 40px tall, so it is 40px per 15 minutes */
+
+  background: #4285f4;
+  border-radius: 8px;
+  color: white;
+  padding: 6px;
+  box-sizing: border-box;
+}

@@ -12,4 +12,4 @@ const getAllCourses = async () => {
     }
 };
 
-export default { getAllCourses }
+export default { getAllCourses };
