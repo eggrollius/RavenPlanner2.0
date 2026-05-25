@@ -3,6 +3,7 @@ import SelectedCourseDisplay from './components/SelectedCourseDisplay.jsx';
 import SchedulesDisplay from './components/ScheduleDisplay.jsx';
 import scheduleService from './services/scheduleService.js';
 import { useEffect, useState } from 'react';
+import './App.css';
 
 const App = () => {
   const [ selectedCourses, setSelectedCourses ] = useState([]);
@@ -33,15 +34,26 @@ const App = () => {
   }, [selectedCourses])
 
   return (
-    <>
-      <h1>Raven Planner</h1>
-      <CourseSelector 
-        onSelect={handleCourseSelect}
-        onDeselect={handleCourseDeselect}
-      />
-      <SelectedCourseDisplay selectedCourses={selectedCourses} />
-      <SchedulesDisplay schedule={schedules.length == 0 ? [] : schedules[0] } />
-    </>
+    <div className="app-container">
+      <header className="app-header">
+        <h1>Raven Planner</h1>
+      </header>
+      
+      <div className="app-main">
+        <aside className="app-sidebar">
+          <CourseSelector 
+            onSelect={handleCourseSelect}
+            onDeselect={handleCourseDeselect}
+            selectedCourses={selectedCourses}
+          />
+          <SelectedCourseDisplay selectedCourses={selectedCourses} onDeselect={handleCourseDeselect} />
+        </aside>
+        
+        <main className="app-content">
+          <SchedulesDisplay schedule={schedules.length == 0 ? [] : schedules[0] } />
+        </main>
+      </div>
+    </div>
   )
 }
 
