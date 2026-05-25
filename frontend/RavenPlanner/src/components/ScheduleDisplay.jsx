@@ -2,7 +2,7 @@ import { Fragment } from 'react';
 import ScheduleMeetingCard from './ScheduleMeetingCard.jsx';
 import './ScheduleDisplay.css';
 
-const ScheduleDisplay = ({ schedule = [] }) => {
+const ScheduleDisplay = ({ schedule = [], selectedCourses = [] }) => {
     const startTimeMinutes = 8 * 60 + 35;
     const endTimeMinutes = 22 * 60 + 5;
     const cellStartTimes = [];
@@ -15,15 +15,27 @@ const ScheduleDisplay = ({ schedule = [] }) => {
     
     // Organize meetings by day of week
     const meetingsByDay = Array(5).fill(null).map(() => []);
+    const courseMap = selectedCourses.reduce((map, course) => {
+        map[course.id] = course;
+        return map;
+    }, {});
     
     // Flatten meetings from all course offerings
     schedule.forEach((courseOffering) => {
+        const offeringCourse = courseMap[courseOffering.courseId];
         courseOffering.meetings.forEach((meeting) => {
+            const meetingWithCourse = {
+                ...meeting,
+                courseId: courseOffering.courseId,
+                courseCode: offeringCourse ? `${offeringCourse.facultyCode} ${offeringCourse.courseCode}` : undefined,
+                courseName: offeringCourse ? offeringCourse.courseName : undefined,
+                courseLink: offeringCourse ? `https://calendar.carleton.ca/search/?P=${encodeURIComponent(`${offeringCourse.facultyCode} ${offeringCourse.courseCode}`)}` : undefined,
+            };
             for (let day = 0; day < 5; day++) {
                 // Check if this meeting occurs on this day using bitmask
                 // Bit 0 = Monday, Bit 1 = Tuesday, etc.
                 if ((meeting.daysOfWeekMask & (1 << day)) !== 0) {
-                    meetingsByDay[day].push(meeting);
+                    meetingsByDay[day].push(meetingWithCourse);
                 }
             }
         });
@@ -63,9 +75,15 @@ const ScheduleDisplay = ({ schedule = [] }) => {
                             {dayMeetings.map((meeting) => (
                                 <ScheduleMeetingCard
                                     key={`${meeting.crn}-${dayIndex}`}
-                                    title={`CRN ${meeting.crn}`}
+                                    courseCode={meeting.courseCode}
+                                    courseName={meeting.courseName}
+                                    meetingType={meeting.meetingType}
+                                    professor={meeting.professor || 'TBA'}
+                                    location={meeting.location || 'TBD'}
                                     start={meeting.startTimeMinutes}
                                     end={meeting.endTimeMinutes}
+                                    courseLink={meeting.courseLink}
+                                    courseCrn={meeting.crn}
                                 />
                             ))}
                         </div>

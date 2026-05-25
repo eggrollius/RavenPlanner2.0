@@ -1,0 +1,91 @@
+.preference-selector {
+  width: 100%;
+  margin-top: 24px;
+  padding: 20px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.preference-header {
+  margin-bottom: 16px;
+}
+
+.preference-header h2 {
+  margin: 0 0 8px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.preference-header p {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.preference-section {
+  display: grid;
+  gap: 18px;
+}
+
+.preference-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.preference-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  min-width: 100px;
+  flex: 1 1 120px;
+  white-space: nowrap;
+}
+
+.preference-time-input {
+  flex: 1 1 140px;
+  max-width: 120px;
+  min-width: 100px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d0d0d0;
+  border-radius: 10px;
+  background: #f9f9f9;
+  color: #1a1a1a;
+}
+
+.preference-days-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.preference-day-button {
+  width: 100%;
+  padding: 10px 0;
+  border: 1px solid #4a90e2;
+  border-radius: 10px;
+  background: #e8f0ff;
+  color: #1a3d7c;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.preference-day-button:hover {
+  background: #d6e6ff;
+  border-color: #3571d6;
+}
+
+.preference-day-button.selected {
+  background: #ffe5e5;
+  border-color: #e06464;
+  color: #9c1f1f;
+}

@@ -1,5 +1,6 @@
 import CourseSelector from './components/CourseSelector.jsx';
 import SelectedCourseDisplay from './components/SelectedCourseDisplay.jsx';
+import PreferenceSelector from './components/PreferenceSelector.jsx';
 import SchedulesDisplay from './components/ScheduleDisplay.jsx';
 import scheduleService from './services/scheduleService.js';
 import { useEffect, useState } from 'react';
@@ -8,6 +9,11 @@ import './App.css';
 const App = () => {
   const [ selectedCourses, setSelectedCourses ] = useState([]);
   const [ schedules, setSchedules ] = useState([]);
+  const [ preferences, setPreferences ] = useState({
+    avoidBeforeTime: '',
+    avoidAfterTime: '',
+    avoidDays: [],
+  });
 
   const handleCourseSelect = (course) => {
     setSelectedCourses(selectedCourses.concat(course));
@@ -17,12 +23,17 @@ const App = () => {
     setSelectedCourses(selectedCourses.filter(course => course.id != deselectedCourse.id));
   };
 
+  const handlePreferencesChange = (newPreferences) => {
+    setPreferences(newPreferences);
+  };
+
   const handleSelectedCoursesChangedAsync = async () => {
     const newSchedules = await scheduleService.getAllSchedules(selectedCourses.map((course) => {
       return course.id
-    }));
+    }), preferences);
 
-    setSchedules(newSchedules);
+    const rankedSchedules = scheduleService.rankSchedules(newSchedules || [], preferences);
+    setSchedules(rankedSchedules);
   };
 
   useEffect(() => {
@@ -31,7 +42,7 @@ const App = () => {
     }
 
     handleSelectedCoursesChangedAsync();
-  }, [selectedCourses])
+  }, [selectedCourses, preferences])
 
   return (
     <div className="app-container">
@@ -41,16 +52,17 @@ const App = () => {
       
       <div className="app-main">
         <aside className="app-sidebar">
+          <SelectedCourseDisplay selectedCourses={selectedCourses} onDeselect={handleCourseDeselect} />
           <CourseSelector 
             onSelect={handleCourseSelect}
             onDeselect={handleCourseDeselect}
             selectedCourses={selectedCourses}
           />
-          <SelectedCourseDisplay selectedCourses={selectedCourses} onDeselect={handleCourseDeselect} />
+          <PreferenceSelector preferences={preferences} onChange={handlePreferencesChange} />
         </aside>
         
         <main className="app-content">
-          <SchedulesDisplay schedule={schedules.length == 0 ? [] : schedules[0] } />
+          <SchedulesDisplay schedule={schedules.length == 0 ? [] : schedules[0]} selectedCourses={selectedCourses} />
         </main>
       </div>
     </div>

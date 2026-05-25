@@ -1,12 +1,58 @@
 .meetingCard {
-  position: relative;
+  position: absolute;
 
-  top: calc((var(--startMinutes) - 515) / 15 * 40px); 
-  height: calc((var(--endMinutes) - var(--startMinutes)) / 15 * 40px); /* each row is 15 minutes and 40px tall, so it is 40px per 15 minutes */
+  top: calc((var(--startMinutes) - 515) / 15 * 40px);
+  height: calc((var(--endMinutes) - var(--startMinutes)) / 15 * 40px);
 
-  background: #4285f4;
-  border-radius: 8px;
+  border-radius: 12px;
   color: white;
-  padding: 6px;
+  padding: 14px 12px 10px;
   box-sizing: border-box;
+  overflow: hidden;
+}
+
+.meetingCardLink {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.meetingCardHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.meetingCardTitle {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.meetingCardType {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+  opacity: 0.95;
+}
+
+.meetingCardSpacer {
+  flex: 1;
+  min-height: 12px;
+}
+
+.meetingCardFooter {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: auto;
+}
+
+.meetingCardDetail {
+  font-size: 11px;
+  line-height: 1.4;
+  opacity: 0.9;
 }
