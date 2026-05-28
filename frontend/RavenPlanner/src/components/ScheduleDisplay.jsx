@@ -71,7 +71,7 @@ const ScheduleDisplay = ({ schedule = [], selectedCourses = [] }) => {
 
                 <div className="events-layer">
                     {meetingsByDay.map((dayMeetings, dayIndex) => (
-                        <div key={dayIndex} style={{ flex: 1 }}>
+                        <div key={dayIndex} style={{ flex: 1, position: "relative" }}>
                             {dayMeetings.map((meeting) => (
                                 <ScheduleMeetingCard
                                     key={`${meeting.crn}-${dayIndex}`}

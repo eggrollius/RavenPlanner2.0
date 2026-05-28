@@ -3,6 +3,7 @@
 
   top: calc((var(--startMinutes) - 515) / 15 * 40px);
   height: calc((var(--endMinutes) - var(--startMinutes)) / 15 * 40px);
+  width: 100%;
 
   border-radius: 12px;
   color: white;
