@@ -7,13 +7,18 @@ const CourseSelector = ({ onSelect, onDeselect }) => {
     const [ searchTerm, setSearchTerm ] = useState("");
     const [ searchResultCourses, setSearchResultCourses ] = useState([]);
 
-    const initializeCourseAsync = async () => {
-        const newCourses = await courseService.getAllCourses();
-        setCourses(newCourses);
-    };
-
     useEffect(() => {
-        initializeCourseAsync();
+        let cancelled = false;
+
+        courseService.getAllCourses().then(newCourses => {
+            if (!cancelled) {
+                setCourses(newCourses);
+            }
+        });
+
+        return () => {
+            cancelled = true;
+        };
     }, []);
 
     const handleSubmit = (event) => {
