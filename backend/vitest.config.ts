@@ -7,5 +7,17 @@ export default defineConfig({
     // Source files import sibling modules with the ESM-required `.js`
     // extension, which maps back to the `.ts` file on disk.
     alias: [{ find: /^(\.{1,2}\/.*)\.js$/, replacement: '$1.ts' }],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'lcov'],
+      include: ['src/**/*.ts'],
+      exclude: ['src/**/__tests__/**'],
+      thresholds: {
+        lines: 80,
+        statements: 80,
+        functions: 75,
+        branches: 70,
+      },
+    },
   },
 });
