@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react';
 import courseService from '../services/courseService';
 
-const CourseSelector = ({ onSelect, onDeselect }) => {
+const CourseSelector = ({ selectedCourses = [], onSelect, onDeselect }) => {
 
     const [ courses, setCourses ] = useState([]);
     const [ searchTerm, setSearchTerm ] = useState("");
-    const [ searchResultCourses, setSearchResultCourses ] = useState([]);
+    const [ submittedSearchTerm, setSubmittedSearchTerm ] = useState("");
 
     useEffect(() => {
         let cancelled = false;
 
         courseService.getAllCourses().then(newCourses => {
             if (!cancelled) {
-                setCourses(newCourses);
+                setCourses(newCourses ?? []);
             }
         });
 
@@ -21,35 +21,31 @@ const CourseSelector = ({ onSelect, onDeselect }) => {
         };
     }, []);
 
+    const normalizedSearch = submittedSearchTerm.toLowerCase();
+    const visibleCourses = courses.filter(course => {
+        const courseName = course.courseName.toLowerCase();
+        const courseCode = (course.facultyCode + course.courseCode).toLowerCase();
+
+        return (
+            courseName.includes(normalizedSearch) ||
+            courseCode.includes(normalizedSearch)
+        );
+    });
+
     const handleSubmit = (event) => {
         event.preventDefault();
-        const normalizedSearch = searchTerm.toLowerCase();
-        const newSearchResultCourses = courses.filter(course => {
-            const courseName = course.courseName.toLowerCase();
-            const courseCode = (course.facultyCode + course.courseCode).toLowerCase();
-
-            return (
-                courseName.includes(normalizedSearch) ||
-                courseCode.includes(normalizedSearch)
-            );
-        });
-
-        console.log("search filter results in:", newSearchResultCourses);
-        setSearchResultCourses(newSearchResultCourses);
+        setSubmittedSearchTerm(searchTerm);
     };
 
     const handleOnChange = (event) => {
-        event.preventDefault();
-        const newSearchTerm = event.target.value;
-        setSearchTerm(newSearchTerm);
+        setSearchTerm(event.target.value);
     };
 
     const handleCheckboxOnChange = (event, course) => {
-        event.preventDefault();
         if (event.target.checked) {
-            onSelect(course);
+            onSelect?.(course);
         } else {
-            onDeselect(course);
+            onDeselect?.(course);
         }
     };
 
@@ -62,21 +58,24 @@ const CourseSelector = ({ onSelect, onDeselect }) => {
                 />
                 <button type="submit">search</button>
             </form>
-            <ul>
-                {searchResultCourses.map(
-                    course => 
-                    <li key={course.id}>
-                        <label>
-                            {course.courseName}
-                        </label>
-                        <input 
-                            type="checkbox" 
-                            onChange={(event) => handleCheckboxOnChange(event, course)} 
-                        />
-                    </li>
-                )}
-
-            </ul>
+            {visibleCourses.length === 0
+                ? <p>No courses to show.</p>
+                : <ul>
+                    {visibleCourses.map(
+                        course => 
+                        <li key={course.id}>
+                            <label>
+                                {course.courseName}
+                                <input 
+                                    type="checkbox" 
+                                    checked={selectedCourses.some(selected => selected.id === course.id)}
+                                    onChange={(event) => handleCheckboxOnChange(event, course)} 
+                                />
+                            </label>
+                        </li>
+                    )}
+                </ul>
+            }
         </div>
     );
 };
