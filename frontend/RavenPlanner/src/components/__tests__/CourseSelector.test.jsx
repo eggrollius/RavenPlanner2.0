@@ -33,11 +33,26 @@ describe('CourseSelector', () => {
     vi.restoreAllMocks()
   })
 
-  it('loads the courses once on mount and shows no results before searching', async () => {
+  it('loads the courses once on mount and lists them before any search', async () => {
     renderSelector()
 
     await waitFor(() => expect(courseService.getAllCourses).toHaveBeenCalledTimes(1))
-    expect(screen.queryAllByRole('listitem')).toHaveLength(0)
+    expect(await screen.findAllByRole('listitem')).toHaveLength(courses.length)
+    expect(screen.getByText('Calculus')).toBeInTheDocument()
+  })
+
+  it('shows an empty state when there are no courses at all', async () => {
+    courseService.getAllCourses.mockResolvedValue([])
+    renderSelector()
+
+    expect(await screen.findByText(/no courses to show/i)).toBeInTheDocument()
+  })
+
+  it('shows an empty state when the request fails and returns nothing', async () => {
+    courseService.getAllCourses.mockResolvedValue(undefined)
+    renderSelector()
+
+    expect(await screen.findByText(/no courses to show/i)).toBeInTheDocument()
   })
 
   it('reflects what the user types in the search field', async () => {
@@ -90,6 +105,7 @@ describe('CourseSelector', () => {
     await search(user, 'underwater basket weaving')
 
     expect(screen.queryAllByRole('listitem')).toHaveLength(0)
+    expect(screen.getByText(/no courses to show/i)).toBeInTheDocument()
   })
 
   it('notifies the parent with the course when its checkbox is checked', async () => {
@@ -104,6 +120,35 @@ describe('CourseSelector', () => {
 
     expect(onSelect).toHaveBeenCalledWith(courses[2])
     expect(onDeselect).not.toHaveBeenCalled()
+  })
+
+  it('checks the boxes of the courses the parent reports as selected', async () => {
+    renderSelector({ selectedCourses: [courses[2]] })
+
+    const checkboxes = await screen.findAllByRole('checkbox')
+    expect(screen.getByRole('checkbox', { name: /calculus/i })).toBeChecked()
+    expect(checkboxes.filter(checkbox => checkbox.checked)).toHaveLength(1)
+  })
+
+  it('notifies the parent with the course when an already selected checkbox is unchecked', async () => {
+    const user = userEvent.setup()
+    const onSelect = vi.fn()
+    const onDeselect = vi.fn()
+    renderSelector({ selectedCourses: [courses[2]], onSelect, onDeselect })
+
+    await user.click(await screen.findByRole('checkbox', { name: /calculus/i }))
+
+    expect(onDeselect).toHaveBeenCalledWith(courses[2])
+    expect(onSelect).not.toHaveBeenCalled()
+  })
+
+  it('does not throw when rendered without selection callbacks', async () => {
+    const user = userEvent.setup()
+    render(<CourseSelector />)
+
+    await user.click(await screen.findByRole('checkbox', { name: /calculus/i }))
+
+    expect(screen.getByRole('checkbox', { name: /calculus/i })).toBeInTheDocument()
   })
 
   it('keeps previous results visible while a new search term is being typed', async () => {
